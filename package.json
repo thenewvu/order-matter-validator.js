@@ -1,0 +1,28 @@
+{
+  "name": "order-matter-validator.js",
+  "version": "0.1.0",
+  "description": "An object validator for Javascript ES6, validate your object by defining order-matter, powerful and extensible validation schema.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/thenewvu/order-matter-validator.js.git"
+  },
+  "keywords": [
+    "object-validator",
+    "valdiate-object",
+    "validation-schema",
+    "validation",
+    "validator",
+    "validate",
+    "es6"
+  ],
+  "author": "Vu Le <thenewvu@gmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/thenewvu/order-matter-validator.js/issues"
+  },
+  "homepage": "https://github.com/thenewvu/order-matter-validator.js#readme"
+}
