@@ -12,12 +12,12 @@ Here is the first prototype of this package:
 const validate = require('order-matter-validator');
 
 const optionsScheme = [
-  'user', [
-    ['required', true, new Error('options.user is required')],
-    ['type', String, new Error('options.user must be a string')],
-    ['minlength', 6, new Error('options.user must be at least 6 characters')],
-    ['pattern', /v.*/i, new Error('options.user must be well form')]
-  ]
+  ['user', [
+    ['required', true, 'options.user is required'],
+    ['type', String, 'options.user must be a string'],
+    ['minlength', 6, 'options.user must be at least 6 characters'],
+    ['pattern', /v.*/i, 'options.user must be well form']
+  ]]
 ];
 
 module.exports = function (options) {
