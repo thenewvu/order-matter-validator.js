@@ -7,22 +7,13 @@ An object validator for Javascript ES6, validate your object by defining order-m
 Here is the first prototype of this package:
 
 ```javascript
-'use strict';
-
 const validate = require('order-matter-validator');
 
-const optionsScheme = [
-  ['user', [
-    ['required', true, 'options.user is required'],
-    ['type', String, 'options.user must be a string'],
-    ['minlength', 6, 'options.user must be at least 6 characters'],
-    ['pattern', /v.*/i, 'options.user must be well form']
-  ]]
+const schema = [
+  ['user', 'truthy', true, 'username must be defined and not empty'],
+  ['user', 'minlength', 6, 'username must have at least 6 characters']
 ];
-
-module.exports = function (options) {
-  validate(options, optionsScheme);
-};
+validate(someobj, schema);
 ```
 
 ## Order-matter
@@ -40,17 +31,9 @@ So here you go:
 
 ```javascript
 const validate = require('order-matter-validator');
-const specialValidator = require('./validators/specialValidator')
+const newrule = require('./rules/newrule')
 
-validate.use('specialValidator', specialValidator);
-
-const optionsScheme = [
-  'afield', [
-    ['specialValidator', 'arg', new Error('afield must be special in some way')]
-  ]
-];
-
-module.exports = function (options) {
-  validate(options, optionsScheme);
-};
+validate.use('newrule', newrule);
+const schema = [['field', 'newrule', 'rule-args', 'newrule-desc']];
+validate(someobj, schema);
 ```
