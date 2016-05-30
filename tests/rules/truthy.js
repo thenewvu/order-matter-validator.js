@@ -20,7 +20,7 @@ describe('rules:truthy', function () {
     const $false = false;
     expect(truthy($false)).to.be.false;
   });
-  it('should return false when the value is truthy', function () {
+  it('should return true when the value is truthy', function () {
     const value = 123123;
     expect(truthy(value)).to.be.true;
   });
