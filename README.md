@@ -1,19 +1,29 @@
-# ORDER-MATTER-VALIDATOR
+# order-matter-validator
 
 An object validator for Javascript ES6, validate your object by defining order-matter, powerful and extensible validation schema.
 
-## Prototype
-
-Here is the first prototype of this package:
+## The first look
 
 ```javascript
 const validate = require('order-matter-validator');
+const isUniqueUser = require('../utils/is-unique-user');
+
+validate.use('unique-user', isUniqueUser);
 
 const schema = [
-  ['user', 'truthy', true, 'username must be defined and not empty'],
-  ['user', 'minlength', 6, 'username must have at least 6 characters']
+  ['user', 'type', 'string', 'username must be a string'],
+  ['user', 'minlen', 6, 'username must be from 6 characters'],
+  ['user', 'unique-user', 'username must be unique'],
+  ['pass', 'type', 'string', 'password must be a string'],
+  ['pass', 'minlen', 6, 'password must be from 6 characters'],
+  ['age', 'type', 'number', 'age must be a number'],
+  ['age', 'min', 13, 'age must be greater than 13'],
+  ['email', 'type', 'string', 'email must be a string'],
+  ['email', 'pattern', config.regex.email, 'email must be well form']
 ];
-validate(someobj, schema);
+validate(obj, schema, err => {
+  
+});
 ```
 
 ## Order-matter

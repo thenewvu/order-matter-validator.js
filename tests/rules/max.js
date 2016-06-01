@@ -4,20 +4,63 @@ const expect = require('chai').expect;
 const max = require('../../lib/rules/max');
 
 describe('rules:max', function () {
-  it('should return true if the value respects the maximum value', function () {
-    expect(max(1, 2)).to.be.true;
-    expect(max(-1, 0)).to.be.true;
+  describe('should return true if', function () {
+    it('the val respects the max', function (cb) {
+      max(1, 2, (valid) => {
+        expect(valid).to.be.true;
+        cb();
+      });
+    });
+    it('the val is undefined', function (cb) {
+      max(undefined, 0, (valid) => {
+        expect(valid).to.be.true;
+        cb();
+      });
+    });
+    it('the val is null', function (cb) {
+      max(null, 0, (valid) => {
+        expect(valid).to.be.true;
+        cb();
+      });
+    });
+    it('the val is a NaN', function (cb) {
+      max(NaN, 0, (valid) => {
+        expect(valid).to.be.true;
+        cb();
+      });
+    });
+    it('the val is an empty string', function (cb) {
+      max('', 0, (valid) => {
+        expect(valid).to.be.true;
+        cb();
+      });
+    });
+    it('the val is a string', function (cb) {
+      max('12', 0, (valid) => {
+        expect(valid).to.be.true;
+        cb();
+      });
+    });
+    it('the val is an empty array', function (cb) {
+      max([], 0, (valid) => {
+        expect(valid).to.be.true;
+        cb();
+      });
+    });
+    it('the val is an array', function (cb) {
+      max([1, 2], 0, (valid) => {
+        expect(valid).to.be.true;
+        cb();
+      });
+    });
   });
-  it('should return false if the value doesnt respect the maximum value', function () {
-    expect(max(2, 0)).to.be.false;
-    expect(max(100, 1)).to.be.false;
-  });
-  it('should return true if the value isnt a number', function () {
-    expect(max(undefined, 0)).to.be.true;
-    expect(max(NaN, 0)).to.be.true;
-    expect(max('', 0)).to.be.true;
-    expect(max('12', 0)).to.be.true;
-    expect(max([], 0)).to.be.true;
-    expect(max([1, 2], 0)).to.be.true;
+
+  describe('should return false if', function (cb) {
+    it('the val doesnt respect the max', function (cb) {
+      max(2, 0, (valid) => {
+        expect(valid).to.be.false;
+        cb();
+      });
+    });
   });
 });

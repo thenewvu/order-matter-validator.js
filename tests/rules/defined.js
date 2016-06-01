@@ -4,32 +4,50 @@ const expect = require('chai').expect;
 const defined = require('../../lib/rules/defined');
 
 describe('rules:defined', function () {
-  it('should return false when the value is not undefined', function () {
-    const value = undefined;
-    expect(defined(value)).to.be.false;
+  describe('should return false if', function() {
+    it('the value is undefined', function(cb) {
+      defined(undefined, undefined, (valid) => {
+        expect(valid).to.be.false;
+        cb();
+      });
+    });
   });
-  it('should return true when the value is an empty string', function () {
-    const value = '';
-    expect(defined(value)).to.be.true;
-  });
-  it('should return true when the value is an white-space-only string', function () {
-    const value = '   ';
-    expect(defined(value)).to.be.true;
-  });
-  it('should return true when the value is an empty array', function () {
-    const value = [];
-    expect(defined(value)).to.be.true;
-  });
-  it('should return true when the value is a NaN', function () {
-    const value = NaN;
-    expect(defined(value)).to.be.true;
-  });
-  it('should return true when the value is null', function () {
-    const value = null;
-    expect(defined(value)).to.be.true;
-  });
-  it('should return true when the value is truthy', function () {
-    const value = 12;
-    expect(defined(value)).to.be.true;
+  describe('should return true if', function() {
+    it('the value is an empty string', function(cb) {
+      defined('', undefined, (valid) => {
+        expect(valid).to.be.true;
+        cb();
+      });
+    });
+    it('the value is a white-space-only string', function(cb) {
+      defined('    ', undefined, (valid) => {
+        expect(valid).to.be.true;
+        cb();
+      });
+    });
+    it('the value is an empty array', function(cb) {
+      defined([], undefined, (valid) => {
+        expect(valid).to.be.true;
+        cb();
+      });
+    });
+    it('the value is a NaN', function(cb) {
+      defined(NaN, undefined, (valid) => {
+        expect(valid).to.be.true;
+        cb();
+      });
+    });
+    it('the value is null', function(cb) {
+      defined(null, undefined, (valid) => {
+        expect(valid).to.be.true;
+        cb();
+      });
+    });
+    it('the value is truthy', function(cb) {
+      defined(12, undefined, (valid) => {
+        expect(valid).to.be.true;
+        cb();
+      });
+    });
   });
 });

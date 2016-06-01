@@ -4,24 +4,45 @@ const expect = require('chai').expect;
 const len = require('../../lib/rules/len');
 
 describe('rules:len', function () {
-  it('should return true if a string respects the length', function () {
-    const str = '123';
-    expect(len(str, 3)).to.be.true;
+  describe('should return true if', function () {
+    it('a string respects the length', function (cb) {
+      len('123', 3, (valid) => {
+        expect(valid).to.be.true;
+        cb();
+      });
+    });
+    it('an array respects the length', function (cb) {
+      len([1, 2, 3], 3, (valid) => {
+        expect(valid).to.be.true;
+        cb();
+      });
+    });
+    it('the value is undefined', function (cb) {
+      len(undefined, 0, (valid) => {
+        expect(valid).to.be.true;
+        cb();
+      });
+    });
+    it('the value is null', function (cb) {
+      len(null, 0, (valid) => {
+        expect(valid).to.be.true;
+        cb();
+      });
+    });
   });
-  it('should return false if a string doesnt respect the length', function () {
-    const str = '';
-    expect(len(str, 3)).to.be.false;
-  });
-  it('should return true if an array respects the length', function () {
-    const arr = [1, 2, 3];
-    expect(len(arr, 3)).to.be.true;
-  });
-  it('should return false if an array doesnt respect the length', function () {
-    const arr = [];
-    expect(len(arr, 3)).to.be.false;
-  });
-  it ('should return true if the value is undefined or null', function() {
-    expect(len(undefined, 0)).to.be.true;
-    expect(len(null, 0)).to.be.true;
+  describe('should return false if', function () {
+    it('a string doesnt respect the length', function (cb) {
+      len('', 3, (valid) => {
+        expect(valid).to.be.false;
+        cb();
+      });
+    });
+    it('an array doesnt respect the length', function (cb) {
+      len([], 3, (valid) => {
+        expect(valid).to.be.false;
+        cb();
+      });
+    });
+
   });
 });
