@@ -1,8 +1,28 @@
 # order-matter-validator
 
-An object validator for Javascript ES6, validate your object by defining order-matter, one-job and extensible validation schema.
+An object validator for Javascript ES6, validate your object by defining order-matter and extensible validation schema.
 
-## The first look
+<!-- TOC depthFrom:2 depthTo:6 withLinks:1 updateOnSave:1 orderedList:0 -->
+
+- [Usage](#usage)
+- [Order-matter schema ?](#order-matter-schema-)
+- [Extensibility](#extensibility)
+- [One-job rules](#one-job-rules)
+- [Rules](#rules)
+	- [defined](#defined)
+	- [len](#len)
+	- [minlen](#minlen)
+	- [maxlen](#maxlen)
+	- [min](#min)
+	- [max](#max)
+	- [pattern](#pattern)
+	- [truthy](#truthy)
+	- [type](#type)
+- [Todos](#todos)
+
+<!-- /TOC -->
+
+## Usage
 
 ```js
 const validate = require('order-matter-validator');
@@ -96,3 +116,171 @@ const schema = [
   ['user', 'unique-user', 'username must be unique']
 ];
 ```
+
+## One-job rules
+
+Before talking about one-job rules, lets talk about more-than-one-job rules, for example, validating when users update their profile, clients sends only changed fields to the server and the server need to validate them:
+
+```js
+const schema = [
+  ['phone', 'pattern', config.regex.phone, 'invalid phone number'],
+  ['email', 'pattern', config.regex.email, 'invalid email']
+];
+
+validate(profile, schema, (err) => {
+  // do something on err
+})
+```
+
+The problem here is, only changed fields are sent to the server, it also means they can be `undefined`, this makes the rule `pattern` can not return `false` if it meets an `undefined` value. That's where one-job rules comes to play.
+
+All rules should only validate the value if it matches some pre-condition, if it's not, just return `true`. For example, `len`, `minlen` and `maxlen` only validates the value if it's an actual number; `pattern` only validates the value if it's a string, so on.
+
+If you want to validate the type of the value, let's `type` do its job:
+
+```js
+const schema = [
+  ['age', 'type', 'number', 'invalid age'],
+  ['age', 'min', 13, 'age below 13 is not allowed']
+]
+```
+
+## Rules
+
+### defined
+
+Ensure a field is defined.
+
+This rule has not opts, so just ignore it in the schema.
+
+```js
+const schema = [
+  ['path.to.field', 'defined', 'description']
+];
+```
+
+### len
+
+Ensure the length of an array or a string equal to a given length.
+
+If the value is not an array or a string, there's no invalidation error. If the field is mandatory, you should combine this rule with `type`.
+
+```js
+const schema = [
+  ['path.to.field', 'type', 'array', 'description'],
+  ['path.to.field', 'len', 3, 'description']
+]
+```
+
+### minlen
+
+Ensure the length of an array or a string respect a  given minimum length.
+
+If the value is not an array or a string, there's no invalidation error. If the field is mandatory, you should combine this rule with `type`.
+
+```js
+const schema = [
+  ['path.to.field', 'type', 'string', 'description'],
+  ['path.to.field', 'minlen', 6, 'description']
+]
+```
+
+### maxlen
+
+Ensure the length of an array or a string respect a  given maximum length.
+
+If the value is not an array or a string, there's no invalidation error. If the field is mandatory, you should combine this rule with `type`.
+
+```js
+const schema = [
+  ['path.to.field', 'type', 'string', 'description'],
+  ['path.to.field', 'maxlen', 30, 'description']
+]
+```
+
+### min
+
+Ensure a number respect a given minimum value.
+
+If the value is not a number, there's no invalidation error. If the field is mandatory, you should combine this rule with 'type'.
+
+```js
+const schema = [
+  ['path.to.field', 'type', 'number', 'description'],
+  ['path.to.field', 'min', 13, 'description']
+]
+```
+
+### max
+
+Ensure a number respect a given maximum value.
+
+If the value is not a number, there's no invalidation error. If the field is mandatory, you should combine this rule with 'type'.
+
+```js
+const schema = [
+  ['path.to.field', 'type', 'number', 'description'],
+  ['path.to.field', 'max', 100, 'description']
+]
+```
+
+### pattern
+
+Ensure a string respect a given pattern.
+
+If the value is not a string,  there's no invalidation error. If the field is mandatory, you should combine this rule with 'type'.
+
+The pattern can be a literal regexp (`/^\w+$/`) or a RegExp instance (`new RegExp('^\\w+$')`).
+
+```js
+const schema = [
+  ['path.to.field', 'type', 'string', 'description'],
+  ['path.to.field', 'pattern', /^\w+$/, 'description']
+]
+```
+
+### truthy
+
+Ensure a value is truthy.
+
+A value is truthy if it's not one of below values:
+
+* `false`
+* `0` (zero)
+* `""` (empty string)
+* `null`
+* `undefined`
+* `NaN` (a special Number value meaning Not-a-Number!)
+* `[]` (empty array)
+
+```js
+const schema = [
+  ['path.to.field', 'truthy', 'description'],
+]
+```
+
+### type
+
+Ensure a value has a type.
+
+The type of the value will be evaluated by `typeof` operator.
+
+Below are supported types:
+
+* `number`
+* `string`
+* `function`
+* `symbol`
+* `undefined`
+* `object`
+
+```js
+const schema = [
+  ['path.to.field', 'type', 'number', 'description']
+]
+```
+
+## Todos
+
+- [ ] Add `range` rule
+- [ ] Add `enum` rule
