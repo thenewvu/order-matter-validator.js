@@ -1,49 +1,98 @@
 # order-matter-validator
 
-An object validator for Javascript ES6, validate your object by defining order-matter, powerful and extensible validation schema.
+An object validator for Javascript ES6, validate your object by defining order-matter, one-job and extensible validation schema.
 
 ## The first look
 
-```javascript
+```js
 const validate = require('order-matter-validator');
-const isUniqueUser = require('../utils/is-unique-user');
 
-validate.use('unique-user', isUniqueUser);
+/**
+ * Extend with a custom rule.
+ */
+validate.use('unique-user', require('../utils/is-unique-username'));
 
+/**
+ * Order-matter schema
+ */
 const schema = [
   ['user', 'type', 'string', 'username must be a string'],
   ['user', 'minlen', 6, 'username must be from 6 characters'],
-  ['user', 'unique-user', 'username must be unique'],
-  ['pass', 'type', 'string', 'password must be a string'],
-  ['pass', 'minlen', 6, 'password must be from 6 characters'],
-  ['age', 'type', 'number', 'age must be a number'],
-  ['age', 'min', 13, 'age must be greater than 13'],
-  ['email', 'type', 'string', 'email must be a string'],
-  ['email', 'pattern', config.regex.email, 'email must be well form']
+  ['user', 'unique-user', 'username must be unique'] // using the custom rule
 ];
+
+/**
+ * Validate some object
+ */
 validate(obj, schema, err => {
-  
+  console.log(err); // null if no validation error
+  console.log(err.path); // the invalidated path
+  console.log(err.value); // the invalidated value
+  console.log(err.rule.name); // the rule name
+  console.log(err.rule.opts); // the rule opts
+  console.log(err.rule.desc); // the rule desc
 });
 ```
 
-## Order-matter
+## Order-matter schema ?
 
-Why order-matter ? Simple as this, for example, you want to check a field of the validating object has to be present first before checking whether it is a string or not; or you want to check some field first before checking other fields. And in fact that, we mostly all need order-matter validation, just look at some real life problems below:
+Why ? Let's consider a non-order-matter schema example below:
 
-- Should check the presence of `username` first, before the presence of `password`.
-- Should check the type of `age` field first, before the minimum of `age`.
+```js
+const schema = {
+  user: {
+    type: 'string',
+    minlen: 6,
+    uniqueUser: true
+  },
+  pass: {
+    type: 'string',
+    minlen: 6
+  }
+}
+```
 
-## Extensible
+So how the underground code know the order of field validation (`user` and `pass` here) or the order of validated rules (`type`, `minlen` and `uniqueUser` here) ?
 
-This package should allow you extend its built-in schema. Though it's flexible already, but who know ? Maybe, sometime, you need a really special and beyond-of-predictable validator that I never think about it before.
+In other words, you want validate `user` first, then `pass`; the rule `type` first before `minlen`, but how to present those things to the underline code ?
 
-So here you go:
+And remember, we can't rely on the order of object definition, just because the specification of JS doesn't specify that (read more: http://stackoverflow.com/a/5525812).
 
-```javascript
+## Extensibility
+
+This package only includes some basic built-in validation rules, they never be enough for our need.
+
+To extend a custom rule, for example, a rule that returns an username is unique or not:
+
+**is-unique-username.js:**
+```js
+const User = require('../models/user');
+
+/**
+ * A rule impl should accept 3 parameters.
+ * The first, the validated value.
+ * The second, additional options.
+ * The third, the callback.
+ *
+ * `cb(true)`` means the value is valid.
+ * `cb(false)` means the value is invalid.
+ *
+ * That's it!
+ */
+module.exports = function (username, opts, cb) {
+  User.findOne({username}, (err, user) => {
+    if (err) throw err;
+    cb(!!user);
+  })
+}
+```
+
+**signup.js:**
+```js
 const validate = require('order-matter-validator');
-const newrule = require('./rules/newrule')
+validate.use('unique-user', require('../utils/is-unique-username'));
 
-validate.use('newrule', newrule);
-const schema = [['field', 'newrule', 'rule-args', 'newrule-desc']];
-validate(someobj, schema);
+const schema = [
+  ['user', 'unique-user', 'username must be unique']
+];
 ```
