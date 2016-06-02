@@ -72,9 +72,9 @@ const schema = {
 }
 ```
 
-So how the underground code know the order of field validation (`user` and `pass` here) or the order of validated rules (`type`, `minlen` and `uniqueUser` here) ?
+So how the underground code know the order of validated fields (`user` and `pass` here) or the order of validated rules (`type`, `minlen` and `uniqueUser` here) ?
 
-In other words, you want validate `user` first, then `pass`; the rule `type` first before `minlen`, but how to present those things to the underline code ?
+In other words, you want to validate `user` first, then `pass`; the rule `type` first before `minlen`, but how to present those things to the underground code ?
 
 And remember, we can't rely on the order of object definition, just because the specification of JS doesn't specify that (read more: http://stackoverflow.com/a/5525812).
 
@@ -82,7 +82,7 @@ And remember, we can't rely on the order of object definition, just because the 
 
 This package only includes some basic built-in validation rules, they never be enough for our need.
 
-To extend a custom rule, for example, a rule that returns an username is unique or not:
+To extend with a custom rule, for example, a rule that ensures an username is unique:
 
 **is-unique-username.js:**
 ```js
@@ -132,7 +132,7 @@ validate(profile, schema, (err) => {
 })
 ```
 
-The problem here is, only changed fields are sent to the server, it also means they can be `undefined`, this makes the rule `pattern` can not return `false` if it meets an `undefined` value. That's where one-job rules comes to play.
+The problem here is, only changed fields are sent to the server, means they're all optional, they can be `undefined`, this makes the rule `pattern` can not return `false` if it meets an `undefined` value. That's where one-job rules comes to play.
 
 All rules should only validate the value if it matches some pre-condition, if it's not, just return `true`. For example, `len`, `minlen` and `maxlen` only validates the value if it's an actual number; `pattern` only validates the value if it's a string, so on.
 
