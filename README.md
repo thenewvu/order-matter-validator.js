@@ -163,7 +163,7 @@ const schema = [
 
 Ensure the length of an array or a string equal to a given length.
 
-If the value is not an array or a string, there's no invalidation error. If the field is mandatory, you should combine this rule with `type`.
+If the value is not an array or a string, there's no validation error. If the field is mandatory, you should combine this rule with `type`.
 
 ```js
 const schema = [
@@ -176,7 +176,7 @@ const schema = [
 
 Ensure the length of an array or a string respect a  given minimum length.
 
-If the value is not an array or a string, there's no invalidation error. If the field is mandatory, you should combine this rule with `type`.
+If the value is not an array or a string, there's no validation error. If the field is mandatory, you should combine this rule with `type`.
 
 ```js
 const schema = [
@@ -189,7 +189,7 @@ const schema = [
 
 Ensure the length of an array or a string respect a  given maximum length.
 
-If the value is not an array or a string, there's no invalidation error. If the field is mandatory, you should combine this rule with `type`.
+If the value is not an array or a string, there's no validation error. If the field is mandatory, you should combine this rule with `type`.
 
 ```js
 const schema = [
@@ -202,7 +202,7 @@ const schema = [
 
 Ensure a number respect a given minimum value.
 
-If the value is not a number, there's no invalidation error. If the field is mandatory, you should combine this rule with 'type'.
+If the value is not a number, there's no validation error. If the field is mandatory, you should combine this rule with 'type'.
 
 ```js
 const schema = [
@@ -215,7 +215,7 @@ const schema = [
 
 Ensure a number respect a given maximum value.
 
-If the value is not a number, there's no invalidation error. If the field is mandatory, you should combine this rule with 'type'.
+If the value is not a number, there's no validation error. If the field is mandatory, you should combine this rule with 'type'.
 
 ```js
 const schema = [
@@ -228,7 +228,7 @@ const schema = [
 
 Ensure a string respect a given pattern.
 
-If the value is not a string,  there's no invalidation error. If the field is mandatory, you should combine this rule with 'type'.
+If the value is not a string,  there's no validation error. If the field is mandatory, you should combine this rule with 'type'.
 
 The pattern can be a literal regexp (`/^\w+$/`) or a RegExp instance (`new RegExp('^\\w+$')`).
 
