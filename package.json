@@ -1,6 +1,6 @@
 {
   "name": "order-matter-validator.js",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "description": "An object validator for Javascript ES6, validate your object by defining order-matter, powerful and extensible validation schema.",
   "main": "index.js",
   "scripts": {
