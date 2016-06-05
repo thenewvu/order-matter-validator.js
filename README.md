@@ -279,5 +279,6 @@ const schema = [
 
 ## Todos
 
-- [ ] Add `range` rule
-- [ ] Add `enum` rule
+- [x] Add `in` rule
+- [ ] Throw if rule opts is invalid
+- [ ] Add `nin` rule
