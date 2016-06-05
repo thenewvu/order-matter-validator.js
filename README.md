@@ -25,36 +25,32 @@ An object validator for Javascript ES6, validate your object by defining order-m
 ## Usage
 
 ```js
-const validate = require('order-matter-validator');
+const validate = require('order-matter-validator.js');
 
-/**
- * Extend with a custom rule.
- */
+// extensible with custom rules
 validate.use('unique-user', require('../utils/is-unique-username'));
 
-/**
- * Order-matter schema
- */
+// order-matter schema
 const schema = [
   ['user', 'type', 'string', 'username must be a string'],
-  ['user', 'minlen', 6, 'username must be from 6 characters'],
+  ['user', 'minlen', 6, 'username must be at least 6 characters'],
   ['user', 'unique-user', 'username must be unique'] // using the custom rule
 ];
 
-/**
- * Validate some object
- */
-validate(obj, schema, err => {
-  console.log(err); // null if no validation error
-  console.log(err.path); // the invalidated path
-  console.log(err.value); // the invalidated value
-  console.log(err.rule.name); // the rule name
-  console.log(err.rule.opts); // the rule opts
-  console.log(err.rule.desc); // the rule desc
+validate(object, schema, err => {
+  if (err) {
+    console.log(err.path); // field path
+    console.log(err.value); // field value
+    console.log(err.rule.name); // rule name
+    console.log(err.rule.opts); // rule options
+    console.log(err.rule.desc); // rule description
+  } else {
+    // err is null when no validation error
+  }
 });
 ```
 
-## Order-matter schema ?
+## Order-matter schema
 
 Why ? Let's consider a non-order-matter schema example below:
 
@@ -72,7 +68,7 @@ const schema = {
 }
 ```
 
-So how the underground code know the order of validated fields (`user` and `pass` here) or the order of validated rules (`type`, `minlen` and `uniqueUser` here) ?
+So how the underground code know the order of validated fields (`user` and `pass` here) or the order of rules (`type`, `minlen` and `uniqueUser` here) ?
 
 In other words, you want to validate `user` first, then `pass`; the rule `type` first before `minlen`, but how to present those things to the underground code ?
 
@@ -80,46 +76,52 @@ And remember, we can't rely on the order of object definition, just because the 
 
 ## Extensibility
 
-This package only includes some basic built-in validation rules, they never be enough for our need.
+This module only includes some basic built-in rules, they never be enough for our need.
 
-To extend with a custom rule, for example, a rule that ensures an username is unique:
+To use a custom rule, for example, a rule that ensures an username is unique:
 
 **is-unique-username.js:**
 ```js
-const User = require('../models/user');
-
 /**
  * A rule impl should accept 3 parameters.
  * The first, the validated value.
  * The second, additional options.
  * The third, the callback.
  *
- * `cb(true)`` means the value is valid.
- * `cb(false)` means the value is invalid.
+ * `cb(true)`` meaning the value is valid.
+ * `cb(false)` meaning the value is invalid.
  *
  * That's it!
  */
 module.exports = function (username, opts, cb) {
   User.findOne({username}, (err, user) => {
     if (err) throw err;
-    cb(!!user);
+    cb(!user);
   })
 }
 ```
 
 **signup.js:**
 ```js
-const validate = require('order-matter-validator');
+const validate = require('order-matter-validator.js');
 validate.use('unique-user', require('../utils/is-unique-username'));
 
 const schema = [
   ['user', 'unique-user', 'username must be unique']
 ];
+
+validate({username: 'thenewvu'}, schema, (err) => {
+  if (err) {
+    // do something
+  } else {
+    // do something
+  }
+})
 ```
 
 ## One-job rules
 
-Before talking about one-job rules, lets talk about more-than-one-job rules, for example, validating when users update their profile, clients sends only changed fields to the server and the server need to validate them:
+Before talking about one-job rules, lets talk about more-than-one-job rules, for example, validating when users are updating their profile, clients sends only changed fields to the server and the server need to validate them:
 
 ```js
 const schema = [
@@ -132,24 +134,17 @@ validate(profile, schema, (err) => {
 })
 ```
 
-The problem here is, only changed fields are sent to the server, means they're all optional, they can be `undefined`, this makes the rule `pattern` can not return `false` if it meets an `undefined` value. That's where one-job rules comes to play.
+The problem here is, only changed fields are sent to the server, therefore they're all optional and can be `undefined`, this makes the rule `pattern` can not validate `undefined` as an invalid value.
 
-All rules should only validate the value if it matches some pre-condition, if it's not, just return `true`. For example, `len`, `minlen` and `maxlen` only validates the value if it's an actual number; `pattern` only validates the value if it's a string, so on.
+To solve this problem in a flexible way, all rules should have only one job. All rules should only validate the value if it matches some pre-condition, if it's not, just act as it's valid and let other rules does their job.
 
-If you want to validate the type of the value, let's `type` do its job:
-
-```js
-const schema = [
-  ['age', 'type', 'number', 'invalid age'],
-  ['age', 'min', 13, 'age below 13 is not allowed']
-]
-```
+For example, these rules, `len`, `minlen` and `maxlen` only validates the value if it's an actual number; `pattern` only validates the value if it's a string, so on. If you want to validate the type of the field value, let the rule `type` does its job.
 
 ## Rules
 
 ### defined
 
-Ensure a field is defined.
+Ensure a field is defined. It's defined only when it's not `undefined`. Even `null` is defined.
 
 This rule has not opts, so just ignore it in the schema.
 
@@ -174,7 +169,7 @@ const schema = [
 
 ### minlen
 
-Ensure the length of an array or a string respect a  given minimum length.
+Ensure the length of an array or a string respect a given minimum length.
 
 If the value is not an array or a string, there's no validation error. If the field is mandatory, you should combine this rule with `type`.
 
@@ -187,7 +182,7 @@ const schema = [
 
 ### maxlen
 
-Ensure the length of an array or a string respect a  given maximum length.
+Ensure the length of an array or a string respect a given maximum length.
 
 If the value is not an array or a string, there's no validation error. If the field is mandatory, you should combine this rule with `type`.
 
@@ -252,6 +247,8 @@ A value is truthy if it's not one of below values:
 * `undefined`
 * `NaN` (a special Number value meaning Not-a-Number!)
 * `[]` (empty array)
+
+This rule has no opts, just ignore it in the schema.
 
 ```js
 const schema = [
