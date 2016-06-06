@@ -5,7 +5,7 @@ An object validator for Javascript ES6, validate your object by defining order-m
 <!-- TOC depthFrom:2 depthTo:6 withLinks:1 updateOnSave:1 orderedList:0 -->
 
 - [Usage](#usage)
-- [Order-matter schema ?](#order-matter-schema-)
+- [Order-matter schema](#order-matter-schema)
 - [Extensibility](#extensibility)
 - [One-job rules](#one-job-rules)
 - [Rules](#rules)
@@ -18,6 +18,8 @@ An object validator for Javascript ES6, validate your object by defining order-m
 	- [pattern](#pattern)
 	- [truthy](#truthy)
 	- [type](#type)
+	- [in](#in)
+	- [nin](#nin)
 - [Todos](#todos)
 
 <!-- /TOC -->
@@ -274,6 +276,30 @@ Below are supported types:
 ```js
 const schema = [
   ['path.to.field', 'type', 'number', 'description']
+]
+```
+
+### in
+
+Ensure a value is in an array.
+
+If the value is `undefined`, there is no validation error. If the field is mandatory, you should combine this rule with the rule `type`.
+
+```js
+const schema = [
+  ['path.to.field', 'in', [1, 2, 3], 'description']
+]
+```
+
+### nin
+
+Ensure a value is not in an array.
+
+If the value is `undefined`, there is no validation error. If the field is mandatory, you should combine this rule with the rule `type`.
+
+```js
+const schema = [
+  ['path.to.field', 'nin', [1, 2, 3], 'description']
 ]
 ```
 
