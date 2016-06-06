@@ -18,13 +18,13 @@ describe('rules:maxlen', function () {
       });
     });
     it('the val is undefined', function (cb) {
-      maxlen(undefined, 0, (valid) => {
+      maxlen(undefined, 1, (valid) => {
         expect(valid).to.be.true;
         cb();
       });
     });
     it('the val is null', function (cb) {
-      maxlen(null, 0, (valid) => {
+      maxlen(null, 1, (valid) => {
         expect(valid).to.be.true;
         cb();
       });
@@ -33,16 +33,23 @@ describe('rules:maxlen', function () {
 
   describe('should return false if', function (cb) {
     it('an array doesnt respect the maxlen', function (cb) {
-      maxlen([2], 0, (valid) => {
+      maxlen([2, 3], 1, (valid) => {
         expect(valid).to.be.false;
         cb();
       });
     });
     it('a string doesnt respect the maxlen', function (cb) {
-      maxlen('2', 0, (valid) => {
+      maxlen('23', 1, (valid) => {
         expect(valid).to.be.false;
         cb();
       });
+    });
+  });
+
+  describe('should throw if', function () {
+    it('the len is less than 1', function () {
+      expect(() => maxlen('string', 0))
+        .to.throw('0 is not greater than 1');
     });
   });
 });

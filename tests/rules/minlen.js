@@ -18,13 +18,13 @@ describe('rules:minlen', function () {
       });
     });
     it('the val is undefined', function (cb) {
-      minlen(undefined, 0, (valid) => {
+      minlen(undefined, 1, (valid) => {
         expect(valid).to.be.true;
         cb();
       });
     });
     it('the val is null', function (cb) {
-      minlen(null, 0, (valid) => {
+      minlen(null, 1, (valid) => {
         expect(valid).to.be.true;
         cb();
       });
@@ -43,6 +43,13 @@ describe('rules:minlen', function () {
         expect(valid).to.be.false;
         cb();
       });
+    });
+  });
+
+  describe('should throw if', function () {
+    it('the len is less than 1', function () {
+      expect(() => minlen('string', 0))
+        .to.throw('0 is not greater than 1');
     });
   });
 });

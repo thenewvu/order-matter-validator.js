@@ -280,5 +280,5 @@ const schema = [
 ## Todos
 
 - [x] Add `in` rule
-- [ ] Throw if rule opts is invalid
+- [x] Throw if rule opts is invalid
 - [ ] Add `nin` rule

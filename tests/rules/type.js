@@ -56,4 +56,11 @@ describe('rules:type', function () {
       });
     });
   });
+
+  describe('should throw if', function () {
+    it('the type is not supported', function () {
+      expect(() => type(12, 'foo'))
+        .to.throw('"foo" is not a supported type');
+    });
+  });
 });

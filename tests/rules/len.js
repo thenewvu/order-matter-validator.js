@@ -18,13 +18,13 @@ describe('rules:len', function () {
       });
     });
     it('the value is undefined', function (cb) {
-      len(undefined, 0, (valid) => {
+      len(undefined, 1, (valid) => {
         expect(valid).to.be.true;
         cb();
       });
     });
     it('the value is null', function (cb) {
-      len(null, 0, (valid) => {
+      len(null, 1, (valid) => {
         expect(valid).to.be.true;
         cb();
       });
@@ -43,6 +43,11 @@ describe('rules:len', function () {
         cb();
       });
     });
-
+  });
+  describe('should throw if', function () {
+    it('the len is less than 1', function () {
+      expect(() => len([], 0))
+        .to.throw('0 is not greater than 1');
+    });
   });
 });
