@@ -281,4 +281,4 @@ const schema = [
 
 - [x] Add `in` rule
 - [x] Throw if rule opts is invalid
-- [ ] Add `nin` rule
+- [x] Add `nin` rule
